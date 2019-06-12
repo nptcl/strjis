@@ -35,7 +35,10 @@ http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt
 http://x0213.org/codetable/
 http://x0213.org/codetable/iso-2022-jp-2004-std.txt
 
-対応表につきましては、「Copyright (c) 2006-2017 Project X0213」さんが作成したものであり、自由に使用・配布・改変等してもよいとのことでしたので、加工して変換テーブルの実装に利用させていただきました。
+JIS X 0213のコード対応表につきましては、
+「Copyright (c) 2006-2017 Project X0213」さんが作成したものであり、
+自由に使用・配布・改変等してもよいとのことでしたので、
+加工して変換テーブルの実装に利用させていただきました。
 ありがとうございます。
 
 
@@ -186,11 +189,24 @@ eucjpとeucjisは同じです。
 
 
 ●JISのエスケープシーケンスの注意
-JISのエスケープシーケンスは、第1・第2水準漢字に相当するものが、JIS C 6226-1978, JIS X 0208-1983, JIS X 0208-1990, JIS X 0213:2000 1面, JIS X 0213:2004 1面と様々ありますが、全部同じものとして処理します。JIS X 0213:2000 2面とJIS X 0212-1990補助漢字すら同じに扱います。
+JISのエスケープシーケンスは、第1・第2水準漢字に相当するものが、
+  JIS C 6226-1978
+  JIS X 0208-1983
+  JIS X 0208-1990
+  JIS X 0213:2000 1面
+  JIS X 0213:2004 1面
+と様々ありますが、全部同じものとして処理します。
+
+下記のモード
+  JIS X 0213:2000 2面
+  JIS X 0212-1990補助漢字
+も同じに扱います。
 
 
 ●Unicode違反
-規約違反のUnicode文字は全てエラーです。例えばコードが#x110000を超えていたり、Surrogate Code Pointを使ってみたり、UTF-8で冗長な方法で表現していた場合は読み込みません。
+規約違反のUnicode文字は全てエラーです。
+例えばコードが#x110000を超えていたり、Surrogate Code Pointを使ってみたり、
+UTF-8で冗長な方法で表現していた場合は読み込みません。
 
 
 ●unicodeタイプについて
@@ -201,31 +217,39 @@ unicodeは、char-code-limitの値を見て、適切なタイプを判断しま�
 
 
 ●recovery
-もし入出力にエラーが生じた場合はその場でerrorコンディションが発生しますが、:recoveryを指定することで、エラー用の文字を出力し、継続することができます。
+もし入出力にエラーが生じた場合はその場でerror conditionが発生しますが、
+引数:recoveryを指定することで、代わりのエラー用の文字を出力させてから
+処理を継続させることができます。
 
-例えば、Unicodeでは#xD800はSurrogate Code Pointと呼ばれる特殊な意味を持つ値であり、文字として現われた場合はエラーになります。
+次にエラーの例を示します。
 
 (coerce-list '(48 #xD800 49) :input 'utf32v)
 -> エラー
 
-:recoveryを指定すると次のようになります。
+文字コード#xD800はSurrogate Code Pointと呼ばれる特殊な意味を持つ値であり、
+文字として現われた場合はエラーになります。
+引数:recoveryを指定すると次のようになります。
 
 (coerce-list '(48 #xD800 49) :input 'utf32v :recovery t)
 -> (48 12307 49)
 
-現われた12307は、次のspecial変数にて指定することができます。
+現われた12307が代わりとなる文字です。
+次のspecial変数にて指定することができます。
   *recovery-ascii*
   *recovery-jis*
   *recovery-eucjis*
   *recovery-shiftjis*
   *recovery-unicode*
 
-今の場合はunicodeの変換なので、次のように指定できます。
+例の場合はunicodeの変換中のエラーなので、*recovery-unicode*を使用します。
+
 (let ((*recovery-unicode* '(33 44 55)))
   (coerce-list '(#x30 #xD800 #x31) :input 'utf32v :recovery t))
 -> (48 33 44 55 49)
 
-エラーが生じたかどうかは、*recovery-check*変数を使うことでわかります。
+エラーによる置き換えが生じたかどうかは、special変数*recovery-check*に
+tが代入されたかどうかで判定することができます。
+
 (let (*recovery-check*)
   (coerce-list '(48 #xD800 49) :input 'utf32v :recovery t)
   *recovery-check*)
@@ -238,54 +262,101 @@ unicodeは、char-code-limitの値を見て、適切なタイプを判断しま�
 
 
 ●改行コードの変換
-改行コードは下記の変数を用いることで変更できます
+改行コードは下記の変数を用いることで変更できます。
   *eol-0a*
   *eol-0d*
   *eol-0d0a*
 
-設定できる値は下記のどれかとなります
+設定できる値は下記のどれかとなります。
   #x0A  ->  #x0Aを出力
   #x0D  ->  #x0Dを出力
   eol2  ->  #x0D #x0Aを出力
   nil   ->  そのまま出力 [デフォルト]
 
-例えば、Microsoftの改行コード「#x0D #x0A」を、Unix一般の#x0Aに変換する場合は次のようにします。
+以下にMicrosoftの改行コード「#x0D #x0A」を、Unix一般の「#x0A」に変換する例を示します。
+
 (let ((*eol-0d0a* #x0A))
   (coerce-list x))
 
 
 ●バッファサイズ指定
 返却値が配列の場合は、一時バッファを用います。
-具体的には次の関数を使用する時にバッファが作成されます。
+次の関数を使用する時にバッファが作成されます。
   coerce-vector
   coerce-string
 
-バッファサイズは標準で64であり、サイズを超える度に新たなバッファが作成されていきます。バッファサイズは:size引数を与えることで指定することができます。
+バッファサイズは標準で64です。
+確保したバッファが足りなくなるたびに、新たなバッファが作成されていきます。
+サイズは引数:sizeを与えることで指定することができます。
 
-例を示します。
 (coerce-vecotr x :size #x010000)
 
 
 ●streamの型指定
-入力にはstreamを指定することができます。
-streamは、stream-element-typeにより、read-charとread-byteのどちらを実行するべきかを判定しています。もし判定がうまく行かない場合は、型を指定することもできます。
+入力にstreamを指定した場合は、関数stream-element-typeを用いて
+そのstreamが文字型かバイナリ型かを調査し、read-charとread-byteのどちらを
+実行するべきかを決定します。
+しかし、もし判定がうまく行かない場合は、引数:stream-input-typeにより
+直接指定することもできます。
 
-read-charを使用する場合は次のようになります。
+read-charを使用する場合は次のように実行します。
+
 (coerce-list x :stream-input-type 'strjis::character)
 
 read-byteを使用する場合は次のようになります。
+
 (coerce-list x :stream-input-type 'strjis::binary)
 
-出力も同様に指定する事ができます
-
+coerce-streamの出力も同様に指定する事ができます。
 write-charを使用する場合は次のようになります。
+
 (coerce-stream x y :stream-output-type 'strjis::character)
 
 write-byteを使用する場合は次のようになります。
+
 (coerce-stream x y :stream-output-type 'strjis::binary)
 
-デフォルト値はnilであり、自動判定を行います。
+デフォルト値は入力・出力ともにnilであり、自動判定を行います。
+
+
+●east-asian-width
+
+east-asian-widthとは、Unicodeを対象に全角か半角かを決めたものです。
+関数east-asian-symbolを用いることで、文字のタイプを取得できます。
+
+(east-asian-symbol
+  (char-code #\あ))
+-> STRJIS::W
+
+返却値はF, H, W, Na, A, Nとなります。
+値の意味については下記を参照して下さい。
+
+・東アジアの文字幅
+https://ja.wikipedia.org/wiki/%E6%9D%B1%E3%82%A2%E3%82%B8%E3%82%A2%E3%81%AE%E6%96%87%E5%AD%97%E5%B9%85
+
+各返却値に対応する文字の長さは、*east-asian-symbol*に指定されています。
+デフォルト値を下記に示します。
+
+strjis::*east-asian-symbol*
+-> ((N . 2) (A . 2) (H . 1) (W . 2) (F . 2) (NA . 1))
+
+上記の値に基づいて文字の長さを取得するには、関数east-asian-widthを用います。
+
+(east-asian-width
+  (char-code #\あ))
+-> 2
+
+関数east-asian-lengthを使用することで、文字列の長さを取得できます。
+
+(east-asian-length
+  (coerce-string "あいうabc" :output 'utf32v))  ;; 正しい呼び出し方
+-> 9
+
+推奨はできませんが、もしbase-charが21bit以上であるならば、
+次のように実行することもできます。
+
+(east-asian-length "あいうabc")  ;; 正しくないかもしれない
+-> 9
 
 
 ●Shift Inと半角カナ
-
