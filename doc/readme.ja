@@ -1,0 +1,291 @@
+日本語テキスト入出力ライブラリ
+strjis
+
+
+■■■はじめに
+strjisは、ANSI Common Lispにて日本語のテキストを読み書きするライブラリです。
+
+・配布場所
+https://github.com/nptcl/strjis
+
+下記のエンコードを扱うことができます。
+  ・JIS
+  ・EUC-JIS
+  ・SHIFT-JIS
+  ・UTF-8, UTF-16, UTF-32
+
+本ライブラリの利点は次のようになります。
+  ・全部ANSI Common Lispで作成してある
+  ・各エンコード間で変換ができる
+  ・「JIS X 0213のコード対応表」を使っている
+  ・JISエンコードの読み書きができる
+ 
+欠点もあります。
+  ・streamとして扱えない (streamへの入出力は可)
+  ・openの:external-formatに指定できない
+  ・規約に厳密に従っているわけではない
+
+Unicodeの変換表は、下記のサイトを参考にさせて頂きました。
+・Unicode Consortium
+http://www.unicode.org/
+http://www.unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/JIS
+http://www.unicode.org/Public/UNIDATA/EastAsianWidth.txt
+
+・JIS X 0213のコード対応表
+http://x0213.org/codetable/
+http://x0213.org/codetable/iso-2022-jp-2004-std.txt
+
+対応表につきましては、「Copyright (c) 2006-2017 Project X0213」さんが作成したものであり、自由に使用・配布・改変等してもよいとのことでしたので、加工して変換テーブルの実装に利用させていただきました。
+ありがとうございます。
+
+
+■■■strjisの使い方
+簡単な使い方をいくつか載せます。
+
+●JISをUTF-8に変換
+JISの文字「1B 24 42 あいう」を変換します。
+
+(coerce-list
+  '(#x1B #x24 #x42  #x24 #x22  #x24 #x24  #x24 #x26)
+  :input 'jis :output 'utf8)
+-> (227 129 130 227 129 132 227 129 134)
+
+
+●SHIFT-JISからUTF-8 BOMありに変換
+「あいう」を変換します。
+
+(coerce-list
+  #(#x82 #xA0 #x82 #xA2 #x82 #xA4)
+  :input 'shiftjis :output 'utf8bom)
+-> (239 187 191 227 129 130 227 129 132 227 129 134)
+
+
+●リストではなく配列を返却したい
+関数coerce-vectorを使用します。
+
+(coerce-vector
+  '(#x82 #xA0 #x82 #xA2 #x82 #xA4)
+  :input 'shiftjis :output 'utf8bom)
+-> #(239 187 191 227 129 130 227 129 132 227 129 134)
+
+
+●入力に文字列を指定したい
+処理系がUnicode対応である必要があります。
+
+(coerce-list "Hello" :output 'eucjis)
+-> (72 101 108 108 111)
+
+
+●出力を文字列にしたい
+処理系がUnicode対応である必要があります。
+
+(coerce-string
+  '(#x1B #x24 #x42  #x24 #x22  #x24 #x24  #x24 #x26)
+  :input 'jis)
+-> "あいう"
+
+
+●ファイルを変換したい
+テキストファイルをJISに変換します。
+処理系がUnicode対応である必要があります。
+
+(with-open-file (input #p"input.txt" :direction :input)
+  (with-open-file (output #p"output.txt" :direction :output
+                          :if-exists :supersede
+                          :if-does-not-exist :create
+                          :element-type '(unsigned-byte 8))
+    (coerce-stream input output :output 'utf16be)))
+
+
+●入力のファイル形式を指定して変換したい
+EUC-JISのテキストファイルをUTF-16BE BOMなしに変換します。
+入力も出力も(unsigned-byte 8)でopenしてください。
+
+(with-open-file (input #p"input.txt" :direction :input
+                       :element-type '(unsigned-byte 8))
+  (with-open-file (output #p"output.txt" :direction :output
+                          :if-exists :supersede
+                          :if-does-not-exist :create
+                          :element-type '(unsigned-byte 8))
+    (coerce-stream input output :input 'eucjis :output 'utf16be)))
+
+
+●入力にbabelを使いたい
+文字列「あいう」の読み込みをbabelに任せます。
+
+(coerce-list
+  (babel:string-to-octets "あいう" :encoding :utf-8)
+  :input 'utf8 :output 'utf16le)
+-> (66 48 68 48 70 48)
+
+
+●入力にopenのexternal-formatを使いたい
+sbclの実行例です。
+
+(with-open-file (input #p"input.txt" :direction :input :external-format :utf-8)
+  (coerce-list input :input 'unicode :output 'utf16le))
+-> UTF-16LEのリスト
+
+
+●ISO-2022-JPを読み込みたい
+JISと互換がある入力の場合は実行できます。
+
+(coerce-string x :input 'jis :output 'utf8)
+→ISO-2022-JPからUTF-8に変換
+
+書き込みもできますが、規約に合っていないかもしれません。
+例えば半角カナは出力されてしまいます。
+
+(coerce-string x :input 'utf8 :output 'jis)
+→UTF-8から問題ありのISO-2022-JPに変換
+
+現状では、ISO-2022-JPの規約に厳密に従った出力はサポートしていません。
+
+
+●関数の説明
+変換に使用する関数は次の通り。
+
+(defun coerce-stream (x &key input output) ...)
+(defun coerce-vector (x &key input output) ...)
+(defun coerce-string (x &key input output) ...)
+(defun coerce-stream (x output-stream &key input output) ...)
+
+xは入力データです。
+数値の配列、数値のリスト、文字列、streamのどれかを指定できます。
+
+inputは入力エンコードタイプであり、下記のsymbolから選択します。
+  utf8 ascii jis eucjp eucjis shiftjis unicode
+  utf16 utf16v utf16be utf16le
+  utf32 utf32v utf32be utf32le
+
+outputは出力エンコードタイプであり、下記のsymbolから選択します。
+  ascii jis eucjp eucjis shiftjis unicode
+  utf8 utf8bom utf8no
+  utf16 utf16v utf16be utf16le utf16bebom utf16lebom
+  utf32 utf32v utf32be utf32le utf32bebom utf32lebom
+
+utf16vは、0から#xFFFFまでの数値を扱います。
+
+utf32vは、0から#x10FFFFまでの数値を扱います。
+
+asciiは#x00～#x7Fまでの文字を限定で扱います。
+
+utf8noは、BOMを除去します。
+
+utf16とutf32は、BOMからbig-endianかlittle-endianを判定します。
+BOMが無かったらbig-endianであるとみなします。
+
+unicodeは、base-charに対応した型です。
+
+
+■■■その他の情報
+適当に書いていきます。
+
+●eucjpについて
+eucjpとeucjisは同じです。
+
+
+●JISのエスケープシーケンスの注意
+JISのエスケープシーケンスは、第1・第2水準漢字に相当するものが、JIS C 6226-1978, JIS X 0208-1983, JIS X 0208-1990, JIS X 0213:2000 1面, JIS X 0213:2004 1面と様々ありますが、全部同じものとして処理します。JIS X 0213:2000 2面とJIS X 0212-1990補助漢字すら同じに扱います。
+
+
+●Unicode違反
+規約違反のUnicode文字は全てエラーです。例えばコードが#x110000を超えていたり、Surrogate Code Pointを使ってみたり、UTF-8で冗長な方法で表現していた場合は読み込みません。
+
+
+●unicodeタイプについて
+unicodeは、char-code-limitの値を見て、適切なタイプを判断します。
+もしchar-code-limitが256以下ならutf8です。
+もしchar-code-limitが65535以下ならutf16vです。
+それ以外ならutf32vです。
+
+
+●recovery
+もし入出力にエラーが生じた場合はその場でerrorコンディションが発生しますが、:recoveryを指定することで、エラー用の文字を出力し、継続することができます。
+
+例えば、Unicodeでは#xD800はSurrogate Code Pointと呼ばれる特殊な意味を持つ値であり、文字として現われた場合はエラーになります。
+
+(coerce-list '(48 #xD800 49) :input 'utf32v)
+-> エラー
+
+:recoveryを指定すると次のようになります。
+
+(coerce-list '(48 #xD800 49) :input 'utf32v :recovery t)
+-> (48 12307 49)
+
+現われた12307は、次のspecial変数にて指定することができます。
+  *recovery-ascii*
+  *recovery-jis*
+  *recovery-eucjis*
+  *recovery-shiftjis*
+  *recovery-unicode*
+
+今の場合はunicodeの変換なので、次のように指定できます。
+(let ((*recovery-unicode* '(33 44 55)))
+  (coerce-list '(#x30 #xD800 #x31) :input 'utf32v :recovery t))
+-> (48 33 44 55 49)
+
+エラーが生じたかどうかは、*recovery-check*変数を使うことでわかります。
+(let (*recovery-check*)
+  (coerce-list '(48 #xD800 49) :input 'utf32v :recovery t)
+  *recovery-check*)
+-> t
+
+(let (*recovery-check*)
+  (coerce-list '(48 49) :input 'utf32v :recovery t)
+  *recovery-check*)
+-> nil
+
+
+●改行コードの変換
+改行コードは下記の変数を用いることで変更できます
+  *eol-0a*
+  *eol-0d*
+  *eol-0d0a*
+
+設定できる値は下記のどれかとなります
+  #x0A  ->  #x0Aを出力
+  #x0D  ->  #x0Dを出力
+  eol2  ->  #x0D #x0Aを出力
+  nil   ->  そのまま出力 [デフォルト]
+
+例えば、Microsoftの改行コード「#x0D #x0A」を、Unix一般の#x0Aに変換する場合は次のようにします。
+(let ((*eol-0d0a* #x0A))
+  (coerce-list x))
+
+
+●バッファサイズ指定
+返却値が配列の場合は、一時バッファを用います。
+具体的には次の関数を使用する時にバッファが作成されます。
+  coerce-vector
+  coerce-string
+
+バッファサイズは標準で64であり、サイズを超える度に新たなバッファが作成されていきます。バッファサイズは:size引数を与えることで指定することができます。
+
+例を示します。
+(coerce-vecotr x :size #x010000)
+
+
+●streamの型指定
+入力にはstreamを指定することができます。
+streamは、stream-element-typeにより、read-charとread-byteのどちらを実行するべきかを判定しています。もし判定がうまく行かない場合は、型を指定することもできます。
+
+read-charを使用する場合は次のようになります。
+(coerce-list x :stream-input-type 'strjis::character)
+
+read-byteを使用する場合は次のようになります。
+(coerce-list x :stream-input-type 'strjis::binary)
+
+出力も同様に指定する事ができます
+
+write-charを使用する場合は次のようになります。
+(coerce-stream x y :stream-output-type 'strjis::character)
+
+write-byteを使用する場合は次のようになります。
+(coerce-stream x y :stream-output-type 'strjis::binary)
+
+デフォルト値はnilであり、自動判定を行います。
+
+
+●Shift Inと半角カナ
+
