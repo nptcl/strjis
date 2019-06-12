@@ -126,7 +126,7 @@ EUC-JISのテキストファイルをUTF-16BE BOMなしに変換します。
 sbclの実行例です。
 
 (with-open-file (input #p"input.txt" :direction :input :external-format :utf-8)
-  (coerce-list input :input 'unicode :output 'utf16le))
+  (coerce-list input :output 'utf16le))
 -> UTF-16LEのリスト
 
 
