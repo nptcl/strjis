@@ -1,7 +1,8 @@
 # strjis
 
-Reading a japanese text from JIS, EUC-JIS, SHIFT-JIS,
-UTF-8, and any Unicode encodings.
+strjis is a japanese text reader
+from JIS, EUC-JIS, SHIFT-JIS, UTF-8, and any Unicode encodings
+in Common Lisp.
 
 
 ## Function
@@ -13,13 +14,13 @@ UTF-8, and any Unicode encodings.
 (coerce-stream x output-stream :input input-encoding :output output-encoding)
 ```
 
-`x`: `(or vector list string stream)`
+x: `(or vector list string stream)`
 
-`input-encoding`: `utf8`, `ascii`, `jis`, `eucjp`, `eucjis`, `shiftjis`, `unicode`,
+input-encoding: `utf8`, `ascii`, `jis`, `eucjp`, `eucjis`, `shiftjis`, `unicode`,
 `utf16`, `utf16v`, `utf16be`, `utf16le`,
 `utf32`, `utf32v`, `utf32be`, `utf32le`
 
-`output-encoding`: `ascii`, `jis`, `eucjp`, `eucjis`, `shiftjis`, `unicode`,
+output-encoding: `ascii`, `jis`, `eucjp`, `eucjis`, `shiftjis`, `unicode`,
 `utf8`, `utf8bom`, `utf8no`,
 `utf16`, `utf16v`, `utf16be`, `utf16le`, `utf16bebom`, `utf16lebom`,
 `utf32`, `utf32v`, `utf32be`, `utf32le`, `utf32bebom`, `utf32lebom`
