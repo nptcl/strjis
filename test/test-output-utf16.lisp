@@ -250,7 +250,7 @@
   (#x42 #x30 #x44 #x30 #xFF #xFE
    #x61 #x00 #x62 #x00 #x63 #x00  #x0a #x00))
 
-(deftest list-utf16.utf8.10
+(deftest list-utf16.utf8.12
   (coerce-list
     '(#xe3 #x81 #x82  #xe3 #x81 #x84  #xEF #xBB #xBF
       #x61 #x62 #x63  #x0a)
@@ -258,7 +258,7 @@
   (#xFF #xFE  #x42 #x30 #x44 #x30 #xFF #xFE
    #x61 #x00 #x62 #x00 #x63 #x00  #x0a #x00))
 
-(deftest list-utf16.utf8.11
+(deftest list-utf16.utf8.13
   (coerce-list
     '(#xEF #xBB #xBF  #xe3 #x81 #x82  #xe3 #x81 #x84  #xEF #xBB #xBF
       #x61 #x62 #x63  #x0a)
@@ -610,7 +610,7 @@
   #(#x42 #x30 #x44 #x30 #xFF #xFE
     #x61 #x00 #x62 #x00 #x63 #x00  #x0a #x00))
 
-(deftest vector-utf16.utf8.10
+(deftest vector-utf16.utf8.12
   (coerce-vector
     '(#xe3 #x81 #x82  #xe3 #x81 #x84  #xEF #xBB #xBF
       #x61 #x62 #x63  #x0a)
@@ -618,7 +618,7 @@
   #(#xFF #xFE  #x42 #x30 #x44 #x30 #xFF #xFE
     #x61 #x00 #x62 #x00 #x63 #x00  #x0a #x00))
 
-(deftest vector-utf16.utf8.11
+(deftest vector-utf16.utf8.13
   (coerce-vector
     '(#xEF #xBB #xBF  #xe3 #x81 #x82  #xe3 #x81 #x84  #xEF #xBB #xBF
       #x61 #x62 #x63  #x0a)
@@ -987,7 +987,7 @@
   (#x42 #x30 #x44 #x30 #xFF #xFE
    #x61 #x00 #x62 #x00 #x63 #x00  #x0a #x00))
 
-(deftest stream-utf16.utf8.10
+(deftest stream-utf16.utf8.12
   (coerce-stream-debug
     '(#xe3 #x81 #x82  #xe3 #x81 #x84  #xEF #xBB #xBF
       #x61 #x62 #x63  #x0a)
@@ -995,7 +995,7 @@
   (#xFF #xFE  #x42 #x30 #x44 #x30 #xFF #xFE
    #x61 #x00 #x62 #x00 #x63 #x00  #x0a #x00))
 
-(deftest stream-utf16.utf8.11
+(deftest stream-utf16.utf8.13
   (coerce-stream-debug
     '(#xEF #xBB #xBF  #xe3 #x81 #x82  #xe3 #x81 #x84  #xEF #xBB #xBF
       #x61 #x62 #x63  #x0a)
