@@ -145,7 +145,7 @@ JISと互換がある入力の場合は実行できます。
 ●関数の説明
 変換に使用する関数は次の通り。
 
-(defun coerce-stream (x &key input output) ...)
+(defun coerce-list (x &key input output) ...)
 (defun coerce-vector (x &key input output) ...)
 (defun coerce-string (x &key input output) ...)
 (defun coerce-stream (x output-stream &key input output) ...)
