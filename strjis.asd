@@ -62,5 +62,6 @@
      (:file "test-output-utf8" :depends-on ("test-operator"))
      (:file "test-output-utf16" :depends-on ("test-operator"))
      (:file "test-output-utf32" :depends-on ("test-operator"))
+     (:file "test-encode" :depends-on ("test-operator"))
      (:file "test-strjis" :depends-on ("test-operator"))))
 
