@@ -305,3 +305,43 @@
       :input 'utf32v :output 'utf32v :recovery t))
   (40 50 #x41 60))
 
+
+;;
+;;  encode-symbol
+;;
+(deftest encode-symbol.1
+  (coerce-list '(40 50 60) :input :u-t-f-8)
+  (40 50 60))
+
+(deftest encode-symbol.2
+  (coerce-list '(40 50 60) :input 'u-t-f-8)
+  (40 50 60))
+
+(deftest encode-symbol.3
+  (coerce-list '(40 50 60) :input :uni-co-de)
+  (40 50 60))
+
+(deftest encode-symbol.4
+  (coerce-list '(40 50 60) :input 'uni-co-de)
+  (40 50 60))
+
+
+;;
+;;  vector-size
+;;
+(deftest vector-size.1
+  (coerce-string "HelloHello" :size 3)
+  "HelloHello")
+
+(deftest vector-size.2
+  (coerce-string "HelloHello" :size #xFFFF)
+  "HelloHello")
+
+(deftest vector-size.3
+  (coerce-vector "HelloHello" :size 3)
+  #(#x48 #x65 #x6C #x6C #x6F  #x48 #x65 #x6C #x6C #x6F))
+
+(deftest vector-size.4
+  (coerce-vector "HelloHello" :size 100)
+  #(#x48 #x65 #x6C #x6C #x6F  #x48 #x65 #x6C #x6C #x6F))
+
