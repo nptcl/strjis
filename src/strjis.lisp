@@ -51,17 +51,18 @@
     (utf32le     (funcall call x #'input-utf32le   t   ))
     (ascii       (funcall call x #'input-ascii     nil ))))
 
+(defun strjis-force-symbol (type)
+  (find-symbol (remove #\- (if (symbolp type)
+                             (symbol-name type)
+                             type))
+               'strjis))
+
 (defun implementation-unicode-symbol (type)
   (when (or (eq type 'unicode)
             (eq (strjis-force-symbol type) 'unicode))
     (or (if (<= char-code-limit #xFF) 'utf8)
         (if (<= char-code-limit #xFFFF) 'utf16v)
         'utf32v)))
-
-(defun strjis-force-symbol (type)
-  (intern (remove #\- (if (symbolp type)
-                        (symbol-name type)
-                        type))))
 
 (defparameter +input-symbol+
   '(utf8 jis eucjp eucjis shiftjis
