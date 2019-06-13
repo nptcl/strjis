@@ -97,7 +97,7 @@ JISの文字「1B 24 42 あいう」を変換します。
                           :if-exists :supersede
                           :if-does-not-exist :create
                           :element-type '(unsigned-byte 8))
-    (coerce-stream input output :output 'utf16be)))
+    (coerce-stream input output :output 'jis)))
 
 
 ●入力のファイル形式を指定して変換したい
