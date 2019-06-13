@@ -20,7 +20,8 @@
 
 (defun pushdata (x inst)
   (etypecase x
-    (character (pushchar x inst))
+    (integer (pushchar x inst))
+    (character (pushchar (char-code x) inst))
     (list (pushlist x inst))
     (vector (dotimes (i (length x))
               (pushchar (elt x i) inst)))))

@@ -18,7 +18,7 @@
      (:file "charqueue" :depends-on ("type"))
      (:file "charout" :depends-on ("type" "charqueue"))
      (:file "input" :depends-on ("inbyte" "charout" "table"))
-     (:file "ascii" :depends-on ("inbyte" "charout"))
+     (:file "ascii" :depends-on ("inbyte" "charout" "table"))
      (:file "jis" :depends-on ("inbyte" "charout"))
      (:file "eucjis" :depends-on ("inbyte" "charout"))
      (:file "shiftjis" :depends-on ("inbyte" "charout" "table"))

@@ -287,3 +287,21 @@
     (debug-file-list 8 +debug-file2+))
   (#x41 #x42 #x43))
 
+
+;;
+;;  error
+;;
+(deftest recovery-integer.1
+  (let ((*recovery-unicode* #x20))
+    (coerce-list
+      '(40 50 #xD800 60)
+      :input 'utf32v :output 'utf32v :recovery t))
+  (40 50 #x20 60))
+
+(deftest recovery-integer.2
+  (let ((*recovery-unicode* #\A))
+    (coerce-list
+      '(40 50 #xD800 60)
+      :input 'utf32v :output 'utf32v :recovery t))
+  (40 50 #x41 60))
+
