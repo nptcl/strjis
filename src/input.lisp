@@ -67,7 +67,7 @@
     start2
     (if (null c) (go finish))
     (if (= c #x1B) (go escape))
-    (if (and *input-kana-shift* (= c #x0E)) (go kana-shift))
+    (if (and *kana-shift* (= c #x0E)) (go kana-shift))
     (if (< c #x20) (go control))
     (if (< c #x7F) (go ascii))
     (if (= c #x7F) (go control))

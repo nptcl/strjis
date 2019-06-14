@@ -10,7 +10,7 @@
     #:*eol-0a*
     #:*eol-0d*
     #:*eol-0d0a*
-    #:*input-kana-shift*
+    #:*kana-shift*
 
     #:ascii
     #:jis

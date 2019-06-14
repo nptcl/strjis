@@ -1,5 +1,5 @@
 ;;
-;;  jis (include iso-2022-jp-2004) encode
+;;  jis encode
 ;;
 (in-package #:strjis)
 

@@ -10,10 +10,11 @@
 (defconstant +file0212+ #p"JIS0212.TXT")
 (defconstant +file2022+ #p"iso-2022-jp-2004-std.txt")
 (defconstant +width+ #p"EastAsianWidth.txt")
-(defconstant +header+ #p"code-header.lisp")
-(defconstant +code+ #p"code-footer.lisp")
+(defconstant +code-header+ #p"code-header.lisp")
+(defconstant +code-zenkaku+ #p"code-zenkaku.lisp")
+(defconstant +code-footer+ #p"code-footer.lisp")
 (defconstant +output+ #p"table.lisp")
-
+(load +code-zenkaku+)
 
 ;;
 ;;  On Lisp
@@ -311,9 +312,14 @@
 (defun write-width-symbol ()
   (format t "(defparameter *east-asian-symbol*~%  ~('~S~))~2%" *width-symbol*))
 
+(defun write-size-constant (name size)
+  (format t "(defconstant +~(size-~A~)+ ~A)~%" name size))
+
 (defun write-size-name (table name)
-  (let ((size (hash-table-count table)))
-    (format t "(defconstant +~(size-~A~)+ ~A)~%" name size)))
+  (write-size-constant name (hash-table-count table)))
+
+(defun write-size-list (list name)
+  (write-size-constant name (length list)))
 
 (defun write-size ()
   (write-size-name *ascii* "ascii")
@@ -322,6 +328,7 @@
   (write-size-name *jis2* "jis2")
   (write-size-name *iso3* "iso3")
   (write-size-name *iso4* "iso4")
+  (write-size-list *input-zenkaku* "zenkaku")
   (write-size-name *iso3-twice* "twice")
   (terpri))
 
@@ -341,17 +348,18 @@
                     +output+ :direction :output
                     :if-exists :supersede
                     :if-does-not-exist :create)
-    (write-redirect +header+)
+    (write-redirect +code-header+)
     (write-0201)
     (write-0208)
     (write-0212)
     (write-2022-3)
     (write-2022-4)
     (write-2022-t)
+    (write-redirect +code-zenkaku+)
     (write-width)
     (write-width-symbol)
     (write-size)
-    (write-redirect +code+)))
+    (write-redirect +code-footer+)))
 
 (defun main ()
   (read-text)

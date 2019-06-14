@@ -6142,6 +6142,24 @@
     (#x2B65 #x02E9 #x02E5)
     (#x2B66 #x02E5 #x02E9)))
 
+(defparameter *input-zenkaku*
+  '((#x21 . #x2123) (#x22 . #x2156) (#x23 . #x2157) (#x24 . #x2122)
+    (#x25 . #x2126) (#x26 . #x2572) (#x27 . #x2521) (#x28 . #x2523)
+    (#x29 . #x2525) (#x2A . #x2527) (#x2B . #x2529) (#x2C . #x2563)
+    (#x2D . #x2565) (#x2E . #x2567) (#x2F . #x2543) (#x30 . #x213C)
+    (#x31 . #x2522) (#x32 . #x2524) (#x33 . #x2526) (#x34 . #x2528)
+    (#x35 . #x252A) (#x36 . #x252B) (#x37 . #x252D) (#x38 . #x252F)
+    (#x39 . #x2531) (#x3A . #x2533) (#x3B . #x2535) (#x3C . #x2537)
+    (#x3D . #x2539) (#x3E . #x253B) (#x3F . #x253D) (#x40 . #x253F)
+    (#x41 . #x2541) (#x42 . #x2544) (#x43 . #x2546) (#x44 . #x2548)
+    (#x45 . #x254A) (#x46 . #x254B) (#x47 . #x254C) (#x48 . #x254D)
+    (#x49 . #x254E) (#x4A . #x254F) (#x4B . #x2552) (#x4C . #x2555)
+    (#x4D . #x2558) (#x4E . #x255B) (#x4F . #x255E) (#x50 . #x255F)
+    (#x51 . #x2560) (#x52 . #x2561) (#x53 . #x2562) (#x54 . #x2564)
+    (#x55 . #x2566) (#x56 . #x2568) (#x57 . #x2569) (#x58 . #x256A)
+    (#x59 . #x256B) (#x5A . #x256C) (#x5B . #x256D) (#x5C . #x256F)
+    (#x5D . #x2573) (#x5E . #x212B) (#x5F . #x212C)))
+
 (defparameter *east-asian-width*
   #((#x00000 #x0001F  n) (#x00020 #x00020 na) (#x00021 #x00023 na)
     (#x00024 #x00024 na) (#x00025 #x00027 na) (#x00028 #x00028 na)
@@ -6963,6 +6981,7 @@
 (defconstant +size-jis2+ 6067)
 (defconstant +size-iso3+ 8797)
 (defconstant +size-iso4+ 2436)
+(defconstant +size-zenkaku+ 63)
 (defconstant +size-twice+ 25)
 
 
@@ -6979,6 +6998,14 @@
           (setf (gethash y rev) x))))
     (setf (symbol-value forward) fwd)
     (setf (symbol-value reverse) rev)
+    (makunbound input)))
+
+(defun defsingle (symbol size input)
+  (let ((table (make-hash-table :test 'eql :size size)))
+    (dolist (c (symbol-value input))
+      (destructuring-bind (x . y) c
+        (setf (gethash x table) y)))
+    (setf (symbol-value symbol) table)
     (makunbound input)))
 
 (defun deftwice (forward reverse size input)
@@ -6999,6 +7026,7 @@
   (defstrjis '*forward-jis2* '*reverse-jis2* +size-jis2+ '*input-jis2*)
   (defstrjis '*forward-iso3* '*reverse-iso3* +size-iso3+ '*input-iso3*)
   (defstrjis '*forward-iso4* '*reverse-iso4* +size-iso4+ '*input-iso4*)
+  (defsingle '*forward-zenkaku* +size-zenkaku+ '*input-zenkaku*)
   (deftwice '*forward-twice* '*reverse-twice* +size-twice+ '*input-twice*))
 
 (define-strjis)

@@ -8,6 +8,7 @@
 (defvar *forward-jis2*)
 (defvar *forward-iso3*)
 (defvar *forward-iso4*)
+(defvar *forward-zenkaku*)
 (defvar *forward-twice*)
 (defvar *reverse-ascii*)
 (defvar *reverse-kana*)
@@ -30,7 +31,8 @@
 (defvar *eol-0d*    nil)
 (defvar *eol-0d0a*  nil)
 
-(defvar *input-kana-shift* t)
+(defvar *kana-iso2022jp* 'error)
+(defvar *kana-shift* t)
 (defvar *big-endian-p*)
 (defvar *recovery*)
 (defvar *vector-size*)

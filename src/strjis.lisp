@@ -21,6 +21,7 @@
   (ecase input
     (utf8        (funcall call x #'input-utf8      ))
     (jis         (funcall call x #'input-jis       ))
+    (iso2022jp   (funcall call x #'input-jis       ))
     (eucjp       (funcall call x #'input-eucjis    ))
     (eucjis      (funcall call x #'input-eucjis    ))
     (shiftjis    (funcall call x #'input-shiftjis  ))
@@ -38,6 +39,7 @@
   (ecase input
     (utf8        (funcall call x #'input-utf8      t   ))
     (jis         (funcall call x #'input-jis       nil ))
+    (iso2022jp   (funcall call x #'input-jis       nil ))
     (eucjp       (funcall call x #'input-eucjis    nil ))
     (eucjis      (funcall call x #'input-eucjis    nil ))
     (shiftjis    (funcall call x #'input-shiftjis  nil ))
@@ -65,7 +67,7 @@
         'utf32v)))
 
 (defparameter +input-symbol+
-  '(utf8 jis eucjp eucjis shiftjis
+  '(utf8 jis iso2022jp eucjp eucjis shiftjis
          utf16 utf16v utf16be utf16le
          utf32 utf32v utf32be utf32le
          ascii))
@@ -77,7 +79,7 @@
       (error "Invalid input element-type ~S." type)))
 
 (defparameter +output-symbol+
-  '(utf8 utf8bom utf8no jis eucjp eucjis shiftjis
+  '(utf8 utf8bom utf8no jis iso2022jp eucjp eucjis shiftjis
          utf16 utf16v utf16be utf16le utf16bebom utf16lebom
          utf32 utf32v utf32be utf32le utf32bebom utf32lebom
          ascii))
@@ -98,6 +100,7 @@
     (utf8bom    (coerce-call2 #'list-utf8bom    x input))
     (utf8no     (coerce-call2 #'list-utf8no     x input))
     (jis        (coerce-call3 #'list-jis        x input))
+    (iso2022jp  (coerce-call3 #'list-iso2022jp  x input))
     (eucjp      (coerce-call3 #'list-eucjis     x input))
     (eucjis     (coerce-call3 #'list-eucjis     x input))
     (shiftjis   (coerce-call3 #'list-shiftjis   x input))
@@ -132,6 +135,7 @@
     (utf8bom    (coerce-call2 #'vector-utf8bom    x input))
     (utf8no     (coerce-call2 #'vector-utf8no     x input))
     (jis        (coerce-call3 #'vector-jis        x input))
+    (iso2022jp  (coerce-call3 #'vector-iso2022jp  x input))
     (eucjp      (coerce-call3 #'vector-eucjis     x input))
     (eucjis     (coerce-call3 #'vector-eucjis     x input))
     (shiftjis   (coerce-call3 #'vector-shiftjis   x input))
@@ -167,6 +171,7 @@
     (utf8bom    (coerce-call2 #'string-utf8bom    x input))
     (utf8no     (coerce-call2 #'string-utf8no     x input))
     (jis        (coerce-call3 #'string-jis        x input))
+    (iso2022jp  (coerce-call3 #'string-iso2022jp  x input))
     (eucjp      (coerce-call3 #'string-eucjis     x input))
     (eucjis     (coerce-call3 #'string-eucjis     x input))
     (shiftjis   (coerce-call3 #'string-shiftjis   x input))
@@ -202,6 +207,7 @@
     (utf8bom    (coerce-call2 #'stream-utf8bom    x input))
     (utf8no     (coerce-call2 #'stream-utf8no     x input))
     (jis        (coerce-call3 #'stream-jis        x input))
+    (iso2022jp  (coerce-call3 #'stream-iso2022jp  x input))
     (eucjp      (coerce-call3 #'stream-eucjis     x input))
     (eucjis     (coerce-call3 #'stream-eucjis     x input))
     (shiftjis   (coerce-call3 #'stream-shiftjis   x input))
