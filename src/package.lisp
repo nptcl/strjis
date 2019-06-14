@@ -10,6 +10,7 @@
     #:*eol-0a*
     #:*eol-0d*
     #:*eol-0d0a*
+    #:*kana-iso2022jp*
     #:*kana-shift*
 
     #:ascii
