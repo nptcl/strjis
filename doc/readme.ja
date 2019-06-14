@@ -9,7 +9,7 @@ strjisは、ANSI Common Lispにて日本語のテキストを読み書きする�
 https://github.com/nptcl/strjis
 
 下記のエンコードを扱うことができます。
-  ・JIS
+  ・JIS, ISO-2022-JP
   ・EUC-JIS
   ・SHIFT-JIS
   ・UTF-8, UTF-16, UTF-32
@@ -131,18 +131,17 @@ sbclの実行例です。
 
 
 ●ISO-2022-JPを読み込みたい
-JISと互換がある入力の場合は実行できます。
+入力ISO-2022-JPからUTF-8に変換。
 
-(coerce-string x :input 'jis :output 'utf8)
+(coerce-string x :input 'iso2022jp :output 'utf8)
 →ISO-2022-JPからUTF-8に変換
 
-書き込みもできますが、規約に合っていないかもしれません。
-例えば半角カナは出力されてしまいます。
+書き込みは、ISO-2022-JP-2004に対応しています。
 
-(coerce-string x :input 'utf8 :output 'jis)
-→UTF-8から問題ありのISO-2022-JPに変換
+(coerce-string x :input 'utf8 :output 'iso2022jp)
+→UTF-8からISO-2022-JP-2004に変換
 
-現状では、ISO-2022-JPの規約に厳密に従った出力はサポートしていません。
+ISO-2022-JPの扱いについては別途説明します。
 
 
 ●関数の説明
@@ -157,12 +156,12 @@ xは入力データです。
 数値の配列、数値のリスト、文字列、streamのどれかを指定できます。
 
 inputは入力エンコードタイプであり、下記のsymbolから選択します。
-  utf8 ascii jis eucjp eucjis shiftjis unicode
+  utf8 ascii jis iso2022jp eucjp eucjis shiftjis unicode
   utf16 utf16v utf16be utf16le
   utf32 utf32v utf32be utf32le
 
 outputは出力エンコードタイプであり、下記のsymbolから選択します。
-  ascii jis eucjp eucjis shiftjis unicode
+  ascii jis iso2022jp eucjp eucjis shiftjis unicode
   utf8 utf8bom utf8no
   utf16 utf16v utf16be utf16le utf16bebom utf16lebom
   utf32 utf32v utf32be utf32le utf32bebom utf32lebom
@@ -356,6 +355,37 @@ strjis::*east-asian-symbol*
 
 (east-asian-length "あいうabc")  ;; 正しくないかもしれない
 -> 9
+
+
+●ISO-2022-JPについて
+ISO-2022-JP-2004の入出力ができます。
+
+ISO-2022-JPとはJISエンコードと非常に似ており、
+JISエンコードに制限を掛けたものがISO-2022-JPとなります。
+制限の内容は次の2つです。
+　・JIS X 0201-1976 半角カナ  [1B 28 49]
+　・JIS X 0212-1990 補助漢字  [1B 24 28 44]
+
+本来であれば入力と出力にて厳密にチェックするべきなのかもしれませんが、
+本ライブラリでは出力のみに制限を掛けるように実装しました。
+よって入力については、JISと全く同じ挙動をします。
+引数:inputに'iso2022jpを指定しても'jisと同じであり、
+入力に半角カナと補助漢字が含まれていても正常に読み込まれます。
+
+一方、書き込みは'iso2022jpを指定することで半角カナと補助漢字に制限を掛けます。
+もし補助漢字を出力しようとした場合は、JIS X 0213第1面と第2面に
+同じ文字が存在しないかかチェックし、存在しない場合はエラーを出力します。
+
+もし半角カナを出力しようとした場合はエラーですが、
+変数*kana-iso2022jp*の値に応じて下記のような挙動に設定できます。
+  'errorの場合は、recovery可能なエラー [デフォルト]
+  'zenkakuの場合は、全角カナに変換して出力
+  'forceの場合は、JISエンコードのように半角カナを出力
+  'rejectの場合は、何も出力しない
+  その他の場合は、recovery不可のerror condition
+
+全角カナに変換した場合は、各文字がそのまま全角に変換されるため、
+例えば半角の「ｶﾞ」は全角の「ガ」ではなく、全角の「カ」＋「゛」に変換されます。
 
 
 ●Shift Inと半角カナ

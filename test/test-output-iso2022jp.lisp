@@ -76,7 +76,7 @@
    #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
    #x1b #x24 #x28 #x51  #x74 #x71))
 
-(deftest-error list-iso2022jp.jis.6
+(deftest-error list-iso2022jp.jis.7
   (coerce-list
     '(#x1b #x24 #x40  #x21 #x21  #x21 #x22  #x21 #x23
       #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C

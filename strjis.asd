@@ -3,7 +3,7 @@
 ;;
 (defsystem strjis
   :description "Japanese text reader"
-  :version "1.0.0"
+  :version "1.0.1"
   :author "nptcl <nptlisp@gmail.com>"
   :licence "Unlicense"
   :in-order-to ((test-op (test-op strjis/test)))
