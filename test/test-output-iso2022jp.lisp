@@ -66,6 +66,16 @@
    #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
    #x1b #x24 #x28 #x51  #x74 #x71))
 
+(deftest list-iso2022jp.jis.6
+  (coerce-list
+    '(#x1b #x24 #x40  #x21 #x21  #x21 #x22  #x21 #x23
+      #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
+      #x1b #x24 #x28 #x44  #x40 #x22)
+    :input 'iso2022jp :output 'iso2022jp)
+  (#x1b #x24 #x28 #x51  #x21 #x21  #x21 #x22  #x21 #x23
+   #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
+   #x1b #x24 #x28 #x51  #x74 #x71))
+
 (deftest-error list-iso2022jp.jis.6
   (coerce-list
     '(#x1b #x24 #x40  #x21 #x21  #x21 #x22  #x21 #x23
