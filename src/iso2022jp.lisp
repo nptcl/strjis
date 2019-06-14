@@ -11,7 +11,9 @@
 
 ;; 1B 28 49           (I   21-5f         kana  Kana
 (defun checkout-kana-zenkaku (inst c)
-  )
+  (aif2 (gethash c *forward-zenkaku*)
+    (charout-jis1 inst it)
+    (charout-error inst it)))
 
 (defmethod charout-kana ((inst charout-iso2022jp) c)
   (let ((type *kana-iso2022jp*))
@@ -39,12 +41,20 @@
     (pushchar a inst)
     (pushchar b inst)))
 
-;; 1B 24 28 44        $D   21-7e  21-7e  jis2  JIS0212sub
+(defun charout-sub-iso2022jp (inst c)
+  (acond2 ((gethash c *reverse-iso3*)
+           (charout-jis1 inst it) t)
+          ((gethash c *reverse-jis1*)
+           (charout-jis1 inst it) t)
+          ((gethash c *reverse-iso4*)
+           (charout-jis2 inst it) t)))
+
 (defmethod charout-sub ((inst charout-iso2022jp) c)
-  (charout-jis-mode inst 'sub '(#x1B #x24 #x28 #x44))
-  (multiple-value-bind (a b) (split2-byte c)
-    (pushchar a inst)
-    (pushchar b inst)))
+  (or (aif2 (gethash c *forward-jis2*)
+        (charout-sub-iso2022jp inst it))
+      (aif2 (gethash c *forward-iso4*)
+        (charout-sub-iso2022jp inst it))
+      (charout-error inst c)))
 
 (defmethod charout-error ((inst charout-iso2022jp) c)
   (if *recovery*
