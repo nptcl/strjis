@@ -230,7 +230,6 @@
 ;;
 ;;  output
 ;;
-
 (defun write-redirect (file)
   (dolist (x (read-list file))
     (format t "~A~%" x)))
