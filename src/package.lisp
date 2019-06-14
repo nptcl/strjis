@@ -14,6 +14,7 @@
 
     #:ascii
     #:jis
+    #:iso2022jp
     #:eucjp
     #:eucjis
     #:shiftjis
