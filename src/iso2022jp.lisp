@@ -4,12 +4,11 @@
 (in-package #:strjis)
 
 ;;
-;;  list jis
+;;  list iso2022jp
 ;;
 (defclass charout-iso2022jp (charout-sub-disable charout-jis)
   ((mode :initform nil)))
 
-;; 1B 28 49           (I   21-5f         kana  Kana
 (defun charout-kana-zenkaku (inst c)
   (aif2 (gethash c *forward-zenkaku*)
     (charout-jis1 inst it)
