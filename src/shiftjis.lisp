@@ -6,7 +6,7 @@
 ;;
 ;;  list shiftjis
 ;;
-(defclass charout-shiftjis (charout) ())
+(defclass charout-shiftjis (charout-sub-disable) ())
 
 (defmethod charout-ascii ((inst charout-shiftjis) c)
   (pushchar c inst))
@@ -55,21 +55,6 @@
       (progn
         (pushchar a inst)
         (pushchar b inst)))))
-
-(defun charout-sub-shiftjis (inst c)
-  (acond2 ((gethash c *reverse-iso3*)
-           (charout-jis1 inst it) t)
-          ((gethash c *reverse-jis1*)
-           (charout-jis1 inst it) t)
-          ((gethash c *reverse-iso4*)
-           (charout-jis2 inst it) t)))
-
-(defmethod charout-sub ((inst charout-shiftjis) c)
-  (or (aif2 (gethash c *forward-jis2*)
-        (charout-sub-shiftjis inst it))
-      (aif2 (gethash c *forward-iso4*)
-        (charout-sub-shiftjis inst it))
-      (charout-error inst c)))
 
 (defmethod charout-control ((inst charout-shiftjis) c)
   (cond ((eq c 'bom) nil)

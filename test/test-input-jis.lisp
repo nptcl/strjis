@@ -170,7 +170,7 @@
   ((jis2 #x2122) (sub #x3132)))
 
 (deftest input-jis.32
-  (let ((*input-kana-shift* nil))
+  (let ((*kana-shift* nil))
     (test-jis
       #(#x1B #x24 #x40 #x21 #x22 #x1B #x28 #x42 #x42 #x0E #x21 #x5F #x0F #x43)))
   ((jis1 #x2122)

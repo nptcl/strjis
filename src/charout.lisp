@@ -49,6 +49,27 @@
 
 
 ;;
+;;  charout-sub-disable
+;;
+(defclass charout-sub-disable (charout) ())
+
+(defun charout-sub-call (inst c)
+  (acond2 ((gethash c *reverse-iso3*)
+           (charout-jis1 inst it) t)
+          ((gethash c *reverse-jis1*)
+           (charout-jis1 inst it) t)
+          ((gethash c *reverse-iso4*)
+           (charout-jis2 inst it) t)))
+
+(defmethod charout-sub ((inst charout-sub-disable) c)
+  (or (aif2 (gethash c *forward-jis2*)
+        (charout-sub-call inst it))
+      (aif2 (gethash c *forward-iso4*)
+        (charout-sub-call inst it))
+      (charout-error inst c)))
+
+
+;;
 ;;  charout-list
 ;;
 (defclass charout-list (charout)
@@ -337,10 +358,6 @@
 (defclass charout-unijis (charout)
   ((prev :initform nil)))
 
-(defmethod charout-result ((inst charout-unijis))
-  (charout-unijis-flush inst)
-  (call-next-method))
-
 (defun charout-unijis-send (inst c)
   (acond2 ((gethash c *reverse-ascii*)
            (charout-ascii inst it))
@@ -354,8 +371,7 @@
            (charout-sub inst it))
           ((gethash c *reverse-jis1*)
            (charout-jis1 inst it))
-          (t (setf (slot-value inst 'prev) nil)
-             (charout-error inst c))))
+          (t (charout-error inst c))))
 
 (defun charout-unijis-flush (inst)
   (with-slots (prev) inst
@@ -382,6 +398,10 @@
         (charout-unijis-send inst prev)
         (setq prev c)))))
 
+(defmethod charout-result ((inst charout-unijis))
+  (charout-unijis-flush inst)
+  (call-next-method))
+
 (defmethod charout-unicode ((inst charout-unijis) c)
   (with-slots (prev) inst
     (if prev
@@ -395,6 +415,11 @@
 
 (defmethod charout-error ((inst charout-unijis) c)
   (declare (ignore c))
-  (charout-unijis-flush inst)
+  (with-slots (prev) inst
+    (when prev
+      (charout-unijis-send
+        inst
+        (prog1 prev
+          (setq prev nil)))))
   (call-next-method))
 

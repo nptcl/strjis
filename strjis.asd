@@ -20,13 +20,15 @@
      (:file "input" :depends-on ("inbyte" "charout" "table"))
      (:file "ascii" :depends-on ("inbyte" "charout" "table"))
      (:file "jis" :depends-on ("inbyte" "charout"))
+     (:file "iso2022jp" :depends-on ("jis"))
      (:file "eucjis" :depends-on ("inbyte" "charout"))
      (:file "shiftjis" :depends-on ("inbyte" "charout" "table"))
      (:file "utf8" :depends-on ("inbyte" "charout"))
      (:file "utf16" :depends-on ("inbyte" "charout"))
      (:file "utf32" :depends-on ("inbyte" "charout"))
      (:file "strjis" :depends-on
-       ("input" "ascii" "jis" "eucjis" "shiftjis" "utf8" "utf16" "utf32"))))
+       ("input" "ascii" "jis" "iso2022jp" "eucjis" "shiftjis"
+	    "utf8" "utf16" "utf32"))))
 
 
 ;;
@@ -57,6 +59,7 @@
      (:file "test-input-utf32" :depends-on ("test-operator"))
      (:file "test-output-ascii" :depends-on ("test-operator"))
      (:file "test-output-jis" :depends-on ("test-operator"))
+     (:file "test-output-iso2022jp" :depends-on ("test-operator"))
      (:file "test-output-eucjis" :depends-on ("test-operator"))
      (:file "test-output-shiftjis" :depends-on ("test-operator"))
      (:file "test-output-utf8" :depends-on ("test-operator"))
