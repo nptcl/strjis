@@ -295,7 +295,7 @@
    #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
    #x1B #x24 #x28 #x51  #x74 #x71)) ;; sub #x40 #x22
 
-(deftest-error list-iso2022jp.utf32v.3  
+(deftest-error list-iso2022jp.utf32v.3
   (coerce-list
     '(#x3000 #x3001 #x3002  #x6E54 #x6E57  #x6378 #x637D #x637C)
     :input 'utf32v :output 'iso2022jp))
@@ -586,7 +586,7 @@
     #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
     #x1B #x24 #x28 #x51  #x74 #x71)) ;; sub #x40 #x22
 
-(deftest-error vector-iso2022jp.utf32v.3  
+(deftest-error vector-iso2022jp.utf32v.3
   (coerce-vector
     '(#x3000 #x3001 #x3002  #x6E54 #x6E57  #x6378 #x637D #x637C)
     :input 'utf32v :output 'iso2022jp))
@@ -903,7 +903,7 @@
    #x1b #x24 #x28 #x50  #x6E #x7B  #x6E #x7C
    #x1B #x24 #x28 #x51  #x74 #x71)) ;; sub #x40 #x22
 
-(deftest-error stream-iso2022jp.utf32v.3  
+(deftest-error stream-iso2022jp.utf32v.3
   (coerce-stream-debug
     '(#x3000 #x3001 #x3002  #x6E54 #x6E57  #x6378 #x637D #x637C)
     :input 'utf32v :output 'iso2022jp))
