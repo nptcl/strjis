@@ -212,3 +212,30 @@
    (jis1 #x2122) (error error) (jis1 #x2526) (error error)
    (jis2 #x2122) (error error) (jis2 #x2526) (error error)))
 
+
+;;
+;;  kana shift
+;;
+(deftest input-jis-kana.1
+  (test-jis
+    '(#x1B #x28 #x42   #x41 #x42 #x0E #x31 #x32 #x33 #x0F #x43 #x44 #x45))
+  ((ascii #x41 #x42)
+   (kana #x31 #x32 #x33)
+   (ascii #x43 #x44 #x45)))
+
+(deftest input-jis-kana.2
+  (let ((*kana-shift* nil))
+    (test-jis
+      '(#x1B #x28 #x42   #x41 #x42 #x0E #x31 #x32 #x33 #x0F #x43 #x44 #x45)))
+  ((ascii #x41 #x42)
+   (control #x0E) (ascii #x31 #x32 #x33) (control #x0F)
+   (ascii #x43 #x44 #x45)))
+
+(deftest input-jis-kana.3
+  (test-jis
+    '(#x1B #x28 #x42   #x41 #x42 #x0E #x31 #x32 #x33
+      #x1B #x28 #x42   #x43 #x44 #x45))
+  ((ascii #x41 #x42)
+   (kana #x31 #x32 #x33)
+   (ascii #x43 #x44 #x45)))
+
