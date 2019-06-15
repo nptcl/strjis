@@ -3,18 +3,18 @@
 ;;  from JIS, EUC-JIS, SHIFT-JIS, UTF-8, and any Unicode encodings
 ;;  in Common Lisp.
 ;;
-;;  Espace Sequence    -    1byte  2byte  mode   type
+;;  Espace Sequence    -       1byte  2byte  mode   type
 ;;  -------------------------------------------------------
-;;  1B 28 42           (B   20-7E         ascii  ASCII
-;;  1B 28 4A           (J   20-7E         ascii  Latin
-;;  1B 28 49           (I   21-5F         kana   Kana
-;;  1B 24 40           $@   21-7E  21-7E  jis1   JIS78
-;;  1B 24 42           $B   21-7E  21-7E  jis1   JIS83
-;;  1B 26 40 1B 24 42  &@   21-7E  21-7E  jis1   JIS90
-;;  1B 24 28 4F        $B   21-7E  21-7E  jis1   JIS2000-1
-;;  1B 24 28 51        $B   21-7E  21-7E  jis1   JIS2004-1
-;;  1B 24 28 50        $B   21-7E  21-7E  jis2   JIS2000-2
-;;  1B 24 28 44        $D   21-7E  21-7E  jis2   JIS0212sub
+;;  1B 28 42           .(B     20-7E         ascii  ASCII
+;;  1B 28 4A           .(J     20-7E         ascii  Latin
+;;  1B 28 49           .(I     21-5F         kana   Kana
+;;  1B 24 40           .$@     21-7E  21-7E  jis1   JIS78
+;;  1B 24 42           .$B     21-7E  21-7E  jis1   JIS83
+;;  1B 26 40 1B 24 42  .&@.$B  21-7E  21-7E  jis1   JIS90
+;;  1B 24 28 4F        .$(O    21-7E  21-7E  jis1   JIS2000-1
+;;  1B 24 28 51        .$(Q    21-7E  21-7E  jis1   JIS2004-1
+;;  1B 24 28 50        .$(P    21-7E  21-7E  jis2   JIS2000-2
+;;  1B 24 28 44        .$(D    21-7E  21-7E  jis2   JIS0212sub
 ;;
 (in-package #:strjis)
 
