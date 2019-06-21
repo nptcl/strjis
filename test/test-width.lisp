@@ -81,23 +81,23 @@
 
 (deftest east-asian-length.2
   (east-asian-length
-    (coerce
-      (mapcar
-        #'code-char
-        '(#x3053 #x3093 #x306B #x3061 #x306F
-          #x61 #x62 #x63 #x64 #x4ECA #x65E5 #x306F))
-      'string))
-  20)
-
-(deftest east-asian-length.3
-  (east-asian-length
     #(#x3053 #x3093 #x306B #x3061 #x306F
       #x61 #x62 #x63 #x64 #x4ECA #x65E5 #x306F))
   20)
 
-(deftest east-asian-length.4
+(deftest east-asian-length.3
   (east-asian-length
     '(#x3053 #x3093 #x306B #x3061 #x306F
       #x61 #x62 #x63 #x64 #x4ECA #x65E5 #x306F))
   20)
+
+;(deftest east-asian-length.4
+;  (east-asian-length
+;    (coerce
+;      (mapcar
+;        #'code-char
+;        '(#x3053 #x3093 #x306B #x3061 #x306F
+;          #x61 #x62 #x63 #x64 #x4ECA #x65E5 #x306F))
+;      'string))
+;  20)
 

@@ -322,8 +322,7 @@ write-byteを使用する場合は次のようになります。
 east-asian-widthとは、Unicodeを対象に全角か半角かを決めたものです。
 関数east-asian-symbolを用いることで、文字のタイプを取得できます。
 
-(east-asian-symbol
-  (char-code #\あ))
+(east-asian-symbol #x3042)  ;; (char-code #\あ)
 -> STRJIS::W
 
 返却値はF, H, W, Na, A, Nとなります。
@@ -340,8 +339,7 @@ strjis::*east-asian-symbol*
 
 上記の値に基づいて文字の長さを取得するには、関数east-asian-widthを用います。
 
-(east-asian-width
-  (char-code #\あ))
+(east-asian-width #x3042)  ;; (char-code #\あ)
 -> 2
 
 関数east-asian-lengthを使用することで、文字列の長さを取得できます。
