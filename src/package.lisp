@@ -27,7 +27,7 @@
     #:utf16le
     #:utf16be
     #:utf16lebom
-    #:utf16bbom
+    #:utf16bebom
     #:utf32
     #:utf32v
     #:utf32le
