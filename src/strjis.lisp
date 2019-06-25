@@ -63,8 +63,8 @@
 (defun implementation-unicode-symbol (type)
   (when (or (eq type 'unicode)
             (eq (strjis-force-symbol type) 'unicode))
-    (or (if (<= char-code-limit #xFF) 'utf8)
-        (if (<= char-code-limit #xFFFF) 'utf16v)
+    (or (if (<= char-code-limit #x0100) 'utf8)
+        (if (<= char-code-limit #x010000) 'utf16v)
         'utf32v)))
 
 (defparameter +input-symbol+
