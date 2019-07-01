@@ -208,8 +208,8 @@ JISのエスケープシーケンスは、第1・第2水準漢字に相当する
 UTF-8で冗長な方法で表現していた場合は読み込みません。
 
 
-●unicodeタイプについて
-unicodeは、char-code-limitの値を見て、適切なタイプを判断します。
+●'unicodeタイプについて
+'unicodeは、char-code-limitの値を見て、適切なタイプを判断します。
 もしchar-code-limitが256以下ならutf8です。
 もしchar-code-limitが65536以下ならutf16vです。
 それ以外ならutf32vです。
@@ -288,7 +288,7 @@ tが代入されたかどうかで判定することができます。
 確保したバッファが足りなくなるたびに、新たなバッファが作成されていきます。
 サイズは引数:sizeを与えることで指定することができます。
 
-(coerce-vecotr x :size #x010000)
+(coerce-vector x :size #x010000)
 
 
 ●streamの型指定
