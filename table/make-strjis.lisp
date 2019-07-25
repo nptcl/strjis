@@ -225,7 +225,7 @@
 
 (defun read-width ()
   (setq *width-table* (read-width-table))
-  (setq *width-symbol* '((n . 2) (a . 2) (h . 1) (w . 2) (f . 2) (na . 1))))
+  (setq *width-symbol* '((n . 1) (a . 2) (h . 1) (w . 2) (f . 2) (na . 1))))
 
 
 ;;

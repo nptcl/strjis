@@ -65,7 +65,7 @@
 
 (deftest east-asian-width.3
   (east-asian-width #x0402)
-  2)
+  1)
 
 (deftest east-asian-width.4
   (east-asian-width #x20A9)

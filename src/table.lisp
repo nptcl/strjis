@@ -6973,7 +6973,7 @@
     (#xF0000 #xFFFFD  a) (#x100000 #x10FFFD  a)))
 
 (defparameter *east-asian-symbol*
-  '((n . 2) (a . 2) (h . 1) (w . 2) (f . 2) (na . 1)))
+  '((n . 1) (a . 2) (h . 1) (w . 2) (f . 2) (na . 1)))
 
 (defconstant +size-ascii+ 95)
 (defconstant +size-kana+ 63)
